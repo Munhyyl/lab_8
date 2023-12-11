@@ -36,11 +36,13 @@
 
 <?php
 if (isset($_GET['s'])) {
-    if (isset($_GET['attributes']) && is_array($_GET['attributes'])) {
-        $description = join(' ', $_GET['attributes']);
+    $selectedFruits = $_GET['selectedAttributes'];
+    
+    if (!empty($selectedFruits)) {
+        $description = join(', ', $selectedFruits);
         echo "You selected {$description}.";
     } else {
-        echo "Please select a fruit.";
+        echo "You didn't select any fruits.";
     }
 }
 ?>
