@@ -5,20 +5,31 @@
         function moveSelectedFruit() {
             var firstSelect = document.getElementById('firstSelect');
             var secondSelect = document.getElementById('secondSelect');
-
+            var selectedOptions = [];
             for (var i = 0; i < firstSelect.options.length; i++) {
                 var option = firstSelect.options[i];
                 if (option.selected) {
-                    secondSelect.add(new Option(option.text, option.value));
-                    firstSelect.remove(i);
-                    i--;  
+                    selectedOptions.push(option);
                 }
+            }
+
+            for(var i=0; i< selectedOptions.length; i++){
+                secondSelect.add(new Option(selectedOptions[i].text, selectedOptions[i].value));
+                firstSelect.remove(firstSelect.selectedIndex);
+            }
+        }
+            function displayAllFruits() {
+            var secondSelect = document.getElementById('secondSelect');
+
+  
+            for (var i = 0; i < secondSelect.options.length; i++) {
+                secondSelect.options[i].selected = true;
             }
         }
     </script>
 </head>
 <body>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="GET">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="GET" onsubmit="displayAllFruits()">
     Select your fruit:<br />
     <select id="firstSelect" name="attributes[]" multiple>
         <option value="apple">Apple</option>
