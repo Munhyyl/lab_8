@@ -1,35 +1,9 @@
 <html>
 <head>
     <title>Personality</title>
-    <script>
-        function moveSelectedFruit() {
-            var firstSelect = document.getElementById('firstSelect');
-            var secondSelect = document.getElementById('secondSelect');
-            var selectedOptions = [];
-            for (var i = 0; i < firstSelect.options.length; i++) {
-                var option = firstSelect.options[i];
-                if (option.selected) {
-                    selectedOptions.push(option);
-                }
-            }
-
-            for(var i=0; i< selectedOptions.length; i++){
-                secondSelect.add(new Option(selectedOptions[i].text, selectedOptions[i].value));
-                firstSelect.remove(firstSelect.selectedIndex);
-            }
-        }
-            function displayAllFruits() {
-            var secondSelect = document.getElementById('secondSelect');
-
-  
-            for (var i = 0; i < secondSelect.options.length; i++) {
-                secondSelect.options[i].selected = true;
-            }
-        }
-    </script>
 </head>
 <body>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="GET" onsubmit="displayAllFruits()">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" ">
     Select your fruit:<br />
     <select id="firstSelect" name="attributes[]" multiple>
         <option value="apple">Apple</option>
@@ -38,22 +12,37 @@
         <option value="grape">Grape</option>
         <option value="kiwi">Kiwi</option>
     </select><br />
-    <input type="button" onclick="moveSelectedFruit()" value="Move to the next select" /><br />
-    <select id="secondSelect" name="selectedAttributes[]" multiple>
-        
-    </select><br />
     <input type="submit" name="s" value="Record my fruit!" />
 </form>
 
 <?php
-if (isset($_GET['s'])) {
-    $selectedFruits = $_GET['selectedAttributes'];
-    
-    if (!empty($selectedFruits)) {
-        $description = join(', ', $selectedFruits);
-        echo "You selected {$description}.";
-    } else {
-        echo "You didn't select any fruits.";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['s'])) {
+        $selectedFruits = isset($_POST['attributes']) ? $_POST['attributes'] : [];
+
+        if (!empty($selectedFruits)) {
+            echo "You selected " . implode(', ', $selectedFruits) . ".";
+
+            
+            echo '<script>';
+            foreach ($selectedFruits as $fruit) {
+                echo 'var option = document.querySelector(\'#firstSelect option[value="' . $fruit . '"]\');';
+                echo 'option.remove();';
+            }
+            echo '</script>';
+
+            
+            echo '<br/><br/>Selected fruits in the second select:';
+            echo '<form>';
+            echo '<select id="secondSelect" name="selectedAttributes[]" multiple>';
+            foreach ($selectedFruits as $fruit) {
+                echo '<option value="' . $fruit . '">' . $fruit . '</option>';
+            }
+            echo '</select>';
+            echo '</form>';
+        } else {
+            echo "You didn't select any fruits.";
+        }
     }
 }
 ?>
